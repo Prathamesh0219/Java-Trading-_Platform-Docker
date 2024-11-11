@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing Maven"
+      - wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+      - tar xzvf apache-maven-3.8.6-bin.tar.gz
+      - export M2_HOME=$(pwd)/apache-maven-3.8.6
+      - export PATH=$M2_HOME/bin:$PATH
+      - mvn -v
+      - sudo apt update
+      - sudo apt install -y docker.io
+      - sudo docker -v
+      - aws --version
+      - sudo mkdir -p ~/.aws
+      - mkdir -p ~/.aws
+      - echo "[default]" > ~/.aws/config
+      - echo "region = us-west-2" >> ~/.aws/config
+      - echo "AWS CLI Set Up successfully..."
+
+  pre_build:
+    commands:
+      - echo "Running mvn clean install..."
+
+  build:
+    commands:
+      - mvn clean install -DskipTests
+      - echo "Building Docker image..."
+      - "docker build -t fusion-backend ."
+      - "aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 333584358732.dkr.ecr.us-west-2.amazonaws.com"
+      - "docker tag fusion-backend:latest 333584358732.dkr.ecr.us-west-2.amazonaws.com/fusion-docker-image:fusion-backend"
+      
+
+artifacts:
+  files:
+    - Dockerrun.aws.json

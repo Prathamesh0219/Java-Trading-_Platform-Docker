@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: monolith
+  cache:
+    type: caffeine  # Specify the cache type as Caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m  # Configure cache size and expiration
+  data:
+    mongodb:
+      uri: ${mongo-uri}
+      database: ${mongo-db}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${auth0-issuer}
+          audience: ${auth0-oauth-issuer}
+
+fusion:
+  auth0:
+    issuer: ${auth0-issuer}
+    audience: ${auth0-audience}
+    client-id: ${auth0-client-id}
+    connection: ${auth0-connection}
+    client-secret: ${auth0-client-secret}
+  metaApi:
+    api-key: ${meta-api-key}
